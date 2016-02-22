@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="msapplication-tap-highlight" content="no" />
+        <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+        <title>List Event</title>
+        <style>
+            a {
+                font-size: 40px;
+            }
+            table,
+            th,
+            td {
+                border: 1px solid black;
+            }            
+        </style>
+    </head>
+    <body>
+        <a href="index.html">Home</a>
+        <table id="tableEvent">
+            <tr>
+                <td>ID</td>
+                <td>Name</td>
+                <td>Location</td>
+                <td>Date</td>
+                <td>Start Time</td>
+                <td>Organize Name</td>
+                <td>Action</td>
+            </tr>
+        </table>     
+        <script type="text/javascript" src="cordova.js"></script>
+        <script type="text/javascript" src="js/DatabaseHandler.js"></script>
+        <script type="text/javascript">
+            
+            connectDB();
+            getListEvent(onSuccessful);
+                        
+            function onSuccessful(listEvents) {
+                
+                var tableEvent = document.getElementById("tableEvent");
+                
+                var numberOfEvent = listEvents.length;
+                
+                // loop for list events
+                for (var i = 0; i < numberOfEvent; i++) {
+                    
+                    // create new table row
+                    var tr = document.createElement("tr");
+                    
+                    // get JSON list properties
+                    var listProperties = Object.keys(listEvents[i]);                    
+                    var numberOfProperty = listProperties.length;
+                    
+                    // loop for list properties
+                    for (var j = 0; j < numberOfProperty; j++) {
+                        
+                        var propertyName = listProperties[j];
+                        var propertyValue = listEvents[i][propertyName];
+                        
+                        // set value for table data at row number j
+                        var td = document.createElement("td");
+                        td.innerText = propertyValue;
+                        
+                        tr.appendChild(td);
+                        
+                    }
+                    
+                    // create button delete
+                    var td = document.createElement("td");
+                    var button = document.createElement("button");
+                    button.innerHTML = "Delete";
+                    button.id = listEvents[i]["ID"];
+                    button.onclick = confirmDelete;
+                    
+                    td.appendChild(button);
+                    tr.appendChild(td);
+                    
+                
+                    tableEvent.appendChild(tr);
+                    
+                }  
+            }
+            
+                            
+            function confirmDelete() {
+                var rs = confirm("Are you sure to delete this event?");
+                if (rs) {
+                    deleteEvent(this.id);
+                } 
+            }
+            
+            
+        </script>
+    </body>
+</html>
